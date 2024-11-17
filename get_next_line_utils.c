@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 14:58:43 by tbeauman          #+#    #+#             */
-/*   Updated: 2024/11/17 18:23:53 by tbeauman         ###   ########.fr       */
+/*   Updated: 2024/11/17 19:14:55 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ char	*ft_strchr(const char *s, int c)
 		return (NULL);
 }
 
-size_t  ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
-    size_t  i;
+	size_t	i;
 
 	i = 0;
-    while(str[i])
-        i++;
-    return(i);
+	while (str[i])
+		i++;
+	return (i);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
