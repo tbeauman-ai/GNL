@@ -6,7 +6,7 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 14:58:43 by tbeauman          #+#    #+#             */
-/*   Updated: 2024/11/17 16:02:17 by tbeauman         ###   ########.fr       */
+/*   Updated: 2024/11/17 18:23:53 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ size_t  ft_strlen(const char *str)
     size_t  i;
 
 	i = 0;
-    while(str[i++])
-        ;
+    while(str[i])
+        i++;
     return(i);
 }
 

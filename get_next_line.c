@@ -6,11 +6,17 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 16:03:02 by tbeauman          #+#    #+#             */
-/*   Updated: 2024/11/17 16:26:57 by tbeauman         ###   ########.fr       */
+/*   Updated: 2024/11/17 19:01:16 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+void    free_line(char **line)
+{
+    free(*line);
+    *line = 0;
+}
 
 char	*ft_strdup(char *src)
 {
@@ -37,12 +43,40 @@ char	*join_buffers(char *buf, char **line)
 
 	tmp = ft_strjoin(*line, buf);
 	free(*line);
+    *line = 0;
 	if (!tmp)
 		return (0);
 	*line = tmp;
 	return (*line);
 }
 
+char    *fill_currl(char **line)
+{
+    char    *str;
+    char    tmp;
+    char    *currl;
+
+    str = ft_strchr(*line, '\n');
+    if (str)
+    {
+        tmp = str[1];
+        str[1] = 0;
+        currl = ft_strdup(*line);
+        if (!currl)
+            return (free_line(line), NULL);
+        str[1] = tmp;
+        return (ft_memmove(line, &str[1], ft_strlen(str)), currl);
+    }
+    else if (ft_strlen(*line) > 0)
+    {
+        currl = ft_strdup(*line);
+        if (!currl)
+            return (free_line(line), NULL);
+        return (free_line(line), currl);
+    }
+    else
+        return (free_line(line), NULL);
+}
 char    *get_next_line(int fd)
 {
     char    buf[BUFFER_SIZE + 1];
@@ -61,14 +95,14 @@ char    *get_next_line(int fd)
     {
         rr = read(fd, buf, BUFFER_SIZE);
         if (rr < 0)
-            return (NULL);
+            return (free_line(&line), NULL);
         if (rr == 0)
             break ;
         buf[rr] = 0;
         if (!join_buffers(buf, &line))
             return (NULL);
     }
-
+    // return (fill_currl(&line));
     char    *str;
     char    tmp;
     char    *currl;
@@ -80,23 +114,18 @@ char    *get_next_line(int fd)
         str[1] = 0;
         currl = ft_strdup(line);
         if (!currl)
-        {
-            free(line);
-            return (NULL);
-        }
+            return (free_line(&line), NULL);
         str[1] = tmp;
-        ft_memmove(line, &str[1], ft_strlen(&str[1] + 1));
+        ft_memmove(line, &str[1], ft_strlen(str));
         return (currl);
     }
     else if (ft_strlen(line) > 0)
     {
         currl = ft_strdup(line);
         if (!currl)
-            return (NULL);
-        free(line);
-        line = 0;
-        return (currl);
+            return (free_line(&line), NULL);
+        return (free_line(&line), currl);
     }
     else
-        return (NULL);
+        return (free_line(&line), NULL);
 }
