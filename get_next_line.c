@@ -6,17 +6,11 @@
 /*   By: tbeauman <tbeauman@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/17 16:03:02 by tbeauman          #+#    #+#             */
-/*   Updated: 2024/11/17 19:16:13 by tbeauman         ###   ########.fr       */
+/*   Updated: 2024/11/24 15:21:13 by tbeauman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-void	free_line(char **line)
-{
-	free(*line);
-	*line = 0;
-}
 
 char	*ft_strdup(char *src)
 {
@@ -78,9 +72,28 @@ char	*fill_currl(char **line)
 		return (free_line(line), NULL);
 }
 
+int	read_process(char **line, int fd)
+{
+	char	*buf;
+	int		rr;
+
+	buf = malloc(BUFFER_SIZE + 1);
+	if (!buf)
+		return (-1);
+	rr = read(fd, buf, BUFFER_SIZE);
+	if (rr < 0 && free_line(&buf))
+		return (free_line(line), -1);
+	if (rr == 0 && free_line(&buf))
+		return (0);
+	buf[rr] = 0;
+	if (!join_buffers(buf, line))
+		return (-1);
+	free_line(&buf);
+	return (rr);
+}
+
 char	*get_next_line(int fd)
 {
-	char		buf[BUFFER_SIZE + 1];
 	static char	*line = NULL;
 	int			rr;
 
@@ -94,13 +107,10 @@ char	*get_next_line(int fd)
 	}
 	while (!ft_strchr(line, '\n'))
 	{
-		rr = read(fd, buf, BUFFER_SIZE);
-		if (rr < 0)
-			return (free_line(&line), NULL);
+		rr = read_process(&line, fd);
 		if (rr == 0)
 			break ;
-		buf[rr] = 0;
-		if (!join_buffers(buf, &line))
+		if (rr == -1)
 			return (NULL);
 	}
 	return (fill_currl(&line));
